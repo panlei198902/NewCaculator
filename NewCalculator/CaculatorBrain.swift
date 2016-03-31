@@ -12,19 +12,50 @@ class CaculatorBrain {
     
     private var opStack = [Op]()
     
+    private enum Op:CustomStringConvertible {
+        case operand(Double)
+        case UnaryOperation(String,Double -> Double)
+        case BinaryOperation(String,(Double,Double) -> Double)
+        var description:String {
+            get{
+                switch self{
+                case .operand(let operand):
+                    return "\(operand)"
+                case .BinaryOperation(let symbol, _):
+                    return symbol
+                case .UnaryOperation(let symbol, _):
+                    return symbol
+                }
+            }
+        }
+    }
+    
     private var knownOps = [String: Op]()
     
-    init() {
-        knownOps["sin"] = Op.UnaryOperation("sin", {sin($0 * M_PI / 180)})
-        knownOps["cos"] = Op.UnaryOperation("cos", {cos($0 * M_PI / 180)})
-        knownOps["+"] = Op.BinaryOperation("+", +)
+    init(){
+        func learnOp(op:Op){
+            knownOps[op.description] = op   //需要理解下
+        }
+        knownOps["sin"] = Op.UnaryOperation("sin"){sin($0 * M_PI / 180)}
+        knownOps["cos"] = Op.UnaryOperation("cos"){cos($0 * M_PI / 180)}
+        knownOps["+"] = Op.BinaryOperation("+",+)
         knownOps["-"] = Op.BinaryOperation("-"){$1 - $0}
         knownOps["÷"] = Op.BinaryOperation("÷"){$1 / $0}
-        knownOps["+"] = Op.BinaryOperation("+", *)
+        knownOps["+"] = Op.BinaryOperation("+",*)
+    }
+    func pushOperand(operand: Double) -> Double?{
+        opStack.append(Op.operand(operand))
+        return evaluate()
+    }
+    func performOperation(symbol: String) -> Double? {
+        if let operation = knownOps[symbol] {
+            opStack.append(operation)
+        }
+        return evaluate()
     }
     func evaluate() -> Double? {
         let (result, reminder) = evaluate(opStack)
-        print("remainingOps: \(reminder)")
+        print("\(opStack) : \(result) with \(reminder) left over")
         return result
         
     }
@@ -35,12 +66,12 @@ class CaculatorBrain {
             switch op {
             case .operand(let operand):
                 return (operand, remaingsOps)
-            case .UnaryOperation(_, let operation):
+            case .UnaryOperation(_,let operation):
                 let evluatioinOperation = evaluate(remaingsOps)
                 if let operand = evluatioinOperation.result {
                 return (operation(operand), evluatioinOperation.remaingsOps)
                 }
-            case .BinaryOperation(_, let operation):
+            case .BinaryOperation(_,let operation):
                 let evluationOperation = evaluate(remaingsOps)
                 if let operand1 = evluationOperation.result{
                     let evluationOperation1 = evaluate(evluationOperation.remaingsOps)
@@ -53,18 +84,7 @@ class CaculatorBrain {
         
         return (nil, ops)
     }
-    private enum Op {
-        case operand(Double)
-        case UnaryOperation(String, Double -> Double)
-        case BinaryOperation(String, (Double,Double) -> Double)
-    }
+  
     
-    func pushOperand(operand: Double){
-        opStack.append(Op.operand(operand))
-    }
-    func performOperation(symbol: String) {
-        if let operation = knownOps[symbol] {
-        opStack.append(operation)
-        }
-    }
+ 
 }

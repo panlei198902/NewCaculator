@@ -11,6 +11,8 @@ import Darwin
 
 class ViewController: UIViewController {
 
+    var caculatorBrain = CaculatorBrain()
+    
     var userIsInMiddleOfTypingNumbers = false
     
     var userHasnotInputDot = true
@@ -59,16 +61,21 @@ class ViewController: UIViewController {
         if userIsInMiddleOfTypingNumbers {
             enter()
         }
-        switch operate {
-        case "×":   performOperation(*)
-        case "÷":   performOperation{$1 / $0}
-        case "+":   performOperation(+)
-        case "−":   performOperation{$1 - $0}
-        case "sin": performOperationBinary{sin($0 * M_PI / 180)}
-        case "cos": performOperationBinary{cos($0 * M_PI / 180)}
-        default:
-            break
+        if let result = caculatorBrain.performOperation(operate){
+            displayValue = result
+        }else {
+            displayValue = 0
         }
+//        switch operate {
+//        case "×":   performOperation(*)
+//        case "÷":   performOperation{$1 / $0}
+//        case "+":   performOperation(+)
+//        case "−":   performOperation{$1 - $0}
+//        case "sin": performOperationBinary{sin($0 * M_PI / 180)}
+//        case "cos": performOperationBinary{cos($0 * M_PI / 180)}
+//        default:
+//            break
+//        }
        
     }
     
@@ -79,26 +86,31 @@ class ViewController: UIViewController {
         userHasnotInputDot = true
         historyOfCaculator.text = ""
     }
-    func performOperationBinary(operation: Double -> Double) {
-        if operandStack.count >= 1 {
-            displayValue = operation(operandStack.removeLast())
-            enter()
-        }
-    }
-    func performOperation(operation: (Double, Double) -> Double) {
-        if operandStack.count >= 2 {
-            display.text! += " "
-            displayValue = operation(operandStack.removeLast(), operandStack.removeLast())
-            enter()
-        }
-    }
+//    func performOperationBinary(operation: Double -> Double) {
+//        if operandStack.count >= 1 {
+//            displayValue = operation(operandStack.removeLast())
+//            enter()
+//        }
+//    }
+//    func performOperation(operation: (Double, Double) -> Double) {
+//        if operandStack.count >= 2 {
+//            display.text! += " "
+//            displayValue = operation(operandStack.removeLast(), operandStack.removeLast())
+//            enter()
+//        }
+//    }
 
     @IBAction func enter() {
-        operandStack.append(displayValue)
+        if let result = caculatorBrain.pushOperand(displayValue) {
+            displayValue = result
+        }else {
+            displayValue = 0
+        }
+//        operandStack.append(displayValue)
         historyOfCaculator.text! += "\(displayValue)  "
         userIsInMiddleOfTypingNumbers = false
         userHasnotInputDot = true
-        print("operand: \(operandStack)")
+//        print("operand: \(operandStack)")
     }
     
 }
