@@ -68,6 +68,17 @@ class ViewController: UIViewController {
        
     }
     
+    @IBAction func backspace() {   // add backspace function
+        if userIsInMiddleOfTypingNumbers {
+            let textString = display.text!
+            display.text = String(textString.characters.dropLast())
+            if display.text!.characters.count == 0 {
+                display.text = "0"
+                userIsInMiddleOfTypingNumbers = false
+            }
+        }
+        
+    }
     @IBAction func clear() {
         caculatorBrain.clearStack()
         display.text = "0"
