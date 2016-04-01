@@ -33,15 +33,15 @@ class CaculatorBrain {
     private var knownOps = [String: Op]()
     
     init(){
-        func learnOp(op:Op){
-            knownOps[op.description] = op   //需要理解下
-        }
+//        func learnOp(op:Op){
+//            knownOps[op.description] = op   //需要理解下
+//        }
         knownOps["sin"] = Op.UnaryOperation("sin"){sin($0 * M_PI / 180)}
         knownOps["cos"] = Op.UnaryOperation("cos"){cos($0 * M_PI / 180)}
-        knownOps["+"] = Op.BinaryOperation("+",+)
-        knownOps["-"] = Op.BinaryOperation("-"){$1 - $0}
+        knownOps["+"] = Op.BinaryOperation("+", +)
+        knownOps["−"] = Op.BinaryOperation("−"){$1 - $0}
         knownOps["÷"] = Op.BinaryOperation("÷"){$1 / $0}
-        knownOps["+"] = Op.BinaryOperation("+",*)
+        knownOps["×"] = Op.BinaryOperation("×", *)
     }
     func pushOperand(operand: Double) -> Double?{
         opStack.append(Op.operand(operand))
@@ -59,6 +59,10 @@ class CaculatorBrain {
         return result
         
     }
+    
+    func clearStack() {
+        opStack.removeAll()
+    }
     private func evaluate(ops:[Op]) -> (result:Double?, remaingsOps:[Op]) {
         if !ops.isEmpty {
             var remaingsOps = ops
@@ -72,19 +76,16 @@ class CaculatorBrain {
                 return (operation(operand), evluatioinOperation.remaingsOps)
                 }
             case .BinaryOperation(_,let operation):
-                let evluationOperation = evaluate(remaingsOps)
-                if let operand1 = evluationOperation.result{
-                    let evluationOperation1 = evaluate(evluationOperation.remaingsOps)
-                    if let operand2 = evluationOperation1.result {
-                        return (operation(operand1,operand2), evluationOperation1.remaingsOps)
+                let evluationOperation1 = evaluate(remaingsOps)
+                if let operand1 = evluationOperation1.result{
+                    let evluationOperation2 = evaluate(evluationOperation1.remaingsOps)
+                    if let operand2 = evluationOperation2.result {
+                        return (operation(operand1,operand2), evluationOperation2.remaingsOps)
                     }
                 }
             }
         }
-        
         return (nil, ops)
     }
-  
-    
- 
+   
 }

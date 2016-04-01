@@ -45,7 +45,6 @@ class ViewController: UIViewController {
         displayValue = M_PI
         enter()
     }
-    var operandStack = [Double]()
     var displayValue:Double {
         get{
             return NSNumberFormatter().numberFromString(display.text!)!.doubleValue
@@ -66,39 +65,17 @@ class ViewController: UIViewController {
         }else {
             displayValue = 0
         }
-//        switch operate {
-//        case "×":   performOperation(*)
-//        case "÷":   performOperation{$1 / $0}
-//        case "+":   performOperation(+)
-//        case "−":   performOperation{$1 - $0}
-//        case "sin": performOperationBinary{sin($0 * M_PI / 180)}
-//        case "cos": performOperationBinary{cos($0 * M_PI / 180)}
-//        default:
-//            break
-//        }
        
     }
     
     @IBAction func clear() {
-        operandStack = []
+        caculatorBrain.clearStack()
         display.text = "0"
         userIsInMiddleOfTypingNumbers = false
         userHasnotInputDot = true
         historyOfCaculator.text = ""
     }
-//    func performOperationBinary(operation: Double -> Double) {
-//        if operandStack.count >= 1 {
-//            displayValue = operation(operandStack.removeLast())
-//            enter()
-//        }
-//    }
-//    func performOperation(operation: (Double, Double) -> Double) {
-//        if operandStack.count >= 2 {
-//            display.text! += " "
-//            displayValue = operation(operandStack.removeLast(), operandStack.removeLast())
-//            enter()
-//        }
-//    }
+
 
     @IBAction func enter() {
         if let result = caculatorBrain.pushOperand(displayValue) {
@@ -106,11 +83,10 @@ class ViewController: UIViewController {
         }else {
             displayValue = 0
         }
-//        operandStack.append(displayValue)
         historyOfCaculator.text! += "\(displayValue)  "
         userIsInMiddleOfTypingNumbers = false
         userHasnotInputDot = true
-//        print("operand: \(operandStack)")
+
     }
     
 }
