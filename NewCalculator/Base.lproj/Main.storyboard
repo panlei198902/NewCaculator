@@ -210,7 +210,7 @@
                                     <action selector="operation:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Axv-Un-BaY"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mej-9P-YHn">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mej-9P-YHn">
                                 <rect key="frame" x="375" y="324" width="80" height="80"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="30"/>
                                 <state key="normal" title="←"/>
@@ -221,16 +221,29 @@
                                     <action selector="backspace" destination="BYZ-38-t0r" eventType="touchUpInside" id="wbw-m8-uQu"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="smS-Iu-tfF">
+                                <rect key="frame" x="375" y="324" width="80" height="80"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="30"/>
+                                <state key="normal" title="+/-"/>
+                                <variation key="widthClass=compact" fixedFrame="YES">
+                                    <rect key="frame" x="251" y="422" width="50" height="50"/>
+                                </variation>
+                                <connections>
+                                    <action selector="addSign:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Irr-5A-aRu"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <variation key="default">
                             <mask key="subviews">
                                 <exclude reference="mej-9P-YHn"/>
+                                <exclude reference="smS-Iu-tfF"/>
                             </mask>
                         </variation>
                         <variation key="widthClass=compact">
                             <mask key="subviews">
                                 <include reference="mej-9P-YHn"/>
+                                <include reference="smS-Iu-tfF"/>
                             </mask>
                         </variation>
                     </view>

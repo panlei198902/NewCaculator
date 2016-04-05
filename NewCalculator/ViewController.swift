@@ -17,6 +17,10 @@ class ViewController: UIViewController {
     
     var userHasnotInputDot = true
     
+    var numberHasSign = false
+    
+    var evaluationStack = [Double]()
+    
     @IBOutlet weak var historyOfCaculator: UILabel!
     
     @IBOutlet weak var display: UILabel!
@@ -26,9 +30,15 @@ class ViewController: UIViewController {
         if userIsInMiddleOfTypingNumbers {
         display.text = display.text! + digit
         } else {
-            display.text = digit
-            userIsInMiddleOfTypingNumbers = true
+            if numberHasSign {
+                display.text = "−" + digit
+                userIsInMiddleOfTypingNumbers = true
+            }
+            else{display.text = digit
+                userIsInMiddleOfTypingNumbers = true
+            }
         }
+      
     }
     
     @IBAction func appendDot(sender: UIButton) {
@@ -45,9 +55,10 @@ class ViewController: UIViewController {
         displayValue = M_PI
         enter()
     }
-    var displayValue:Double {
+    var displayValue: Double? {
         get{
-            return NSNumberFormatter().numberFromString(display.text!)!.doubleValue
+            let displayNumber = NSNumberFormatter().numberFromString(display.text!)!.doubleValue ?? 0
+            return displayNumber
         }
         set {
             display.text = "\(newValue)"
@@ -56,18 +67,29 @@ class ViewController: UIViewController {
     }
     @IBAction func operation(sender: UIButton) {
        let operate = sender.currentTitle!
-        historyOfCaculator.text! += operate
         if userIsInMiddleOfTypingNumbers {
             enter()
         }
         if let result = caculatorBrain.performOperation(operate){
             displayValue = result
+            historyOfCaculator.text = ("\(evaluationStack.removeAtIndex(evaluationStack.count - 2)) \(operate) \(evaluationStack.removeLast()) = \(result)")
+            evaluationStack.append(result)
         }else {
-            displayValue = 0
+            displayValue = nil
         }
        
     }
     
+    @IBAction func addSign(sender: UIButton) { // I am typing this function
+        if numberHasSign {
+            let displayString = display.text!
+            display.text = String(displayString.characters.dropFirst())
+            numberHasSign = false
+        } else {
+            display.text = "−" + display.text!
+            numberHasSign = true
+        }
+    }
     @IBAction func backspace() {   // add backspace function
         if userIsInMiddleOfTypingNumbers {
             let textString = display.text!
@@ -85,18 +107,21 @@ class ViewController: UIViewController {
         userIsInMiddleOfTypingNumbers = false
         userHasnotInputDot = true
         historyOfCaculator.text = ""
+        numberHasSign = false
     }
 
 
     @IBAction func enter() {
-        if let result = caculatorBrain.pushOperand(displayValue) {
+        if let result = caculatorBrain.pushOperand(displayValue!) {
             displayValue = result
+            evaluationStack.append(displayValue!)
         }else {
-            displayValue = 0
+            displayValue = nil
         }
         historyOfCaculator.text! += "\(displayValue)  "
         userIsInMiddleOfTypingNumbers = false
         userHasnotInputDot = true
+        numberHasSign = false
 
     }
     

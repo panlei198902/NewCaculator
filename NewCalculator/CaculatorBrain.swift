@@ -47,6 +47,9 @@ class CaculatorBrain {
         opStack.append(Op.operand(operand))
         return evaluate()
     }
+//    func pushOperand(symbol: String) -> Double? {
+//        
+//    }
     func performOperation(symbol: String) -> Double? {
         if let operation = knownOps[symbol] {
             opStack.append(operation)
