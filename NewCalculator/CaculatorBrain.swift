@@ -10,13 +10,17 @@ import Foundation
 
 class CaculatorBrain {
     
-    private var opStack = [Op]()
+    private var opStack = [Op]()  // create a stack for caculation
     
-    private enum Op:CustomStringConvertible {
+    private enum Op:CustomStringConvertible {    // create a enum for oparand and operation
         case operand(Double)
+        //operand is a double type
         case UnaryOperation(String,Double -> Double)
+        // unary operantion conbined a string (oparation symbol) and a function with a double parameter which return a double
         case BinaryOperation(String,(Double,Double) -> Double)
+        // binary operation conbined a string (oparation symbol) and a function with two double parameter which return a double
         var description:String {
+        // read-only computered propety return the op type as string
             get{
                 switch self{
                 case .operand(let operand):
@@ -29,41 +33,63 @@ class CaculatorBrain {
             }
         }
     }
+
     
     private var knownOps = [String: Op]()
+    // give a dictionary as matching relationship between symbol and op function 
     
     init(){
-//        func learnOp(op:Op){
-//            knownOps[op.description] = op   //需要理解下
-//        }
-        knownOps["sin"] = Op.UnaryOperation("sin"){sin($0 * M_PI / 180)}
-        knownOps["cos"] = Op.UnaryOperation("cos"){cos($0 * M_PI / 180)}
-        knownOps["+"] = Op.BinaryOperation("+", +)
-        knownOps["−"] = Op.BinaryOperation("−"){$1 - $0}
-        knownOps["÷"] = Op.BinaryOperation("÷"){$1 / $0}
-        knownOps["×"] = Op.BinaryOperation("×", *)
+        func learnOp(op:Op) {
+            knownOps[op.description] = op
+        }
+        // init a function for creatation the known operation and fill the learnOp dictionary
+        learnOp(Op.UnaryOperation("sin"){sin($0 * M_PI / 180)})
+        learnOp(Op.UnaryOperation("cos"){cos($0 * M_PI / 180)})
+        learnOp(Op.BinaryOperation("+", +))
+        learnOp(Op.BinaryOperation("−"){$1 - $0})
+        learnOp(Op.BinaryOperation("÷"){$1 / $0})
+        learnOp(Op.BinaryOperation("×", *))
+        
+      
+        
     }
+    var varieableValue = [String: Double]()
+
     func pushOperand(operand: Double) -> Double?{
+        // function for pushing a operand to opStack, otherwise get a optional double as return
         opStack.append(Op.operand(operand))
+        // insert a operand into the opStack
         return evaluate()
+        //return result of evalute fuction
     }
+//    func pushOperand(symbol: String) -> Double? {  //push vaireable
+//        if let varieableNumber = varieableValue[symbol]{
+//            opStack.append(Op.operand(varieableNumber))
+//        } else {
+//            let operand = opStack.removeLast()
+//            varieableValue[symbol] = operand
+//        }
+//        return evaluate()
+//    }
 //    func pushOperand(symbol: String) -> Double? {
 //        
 //    }
     func performOperation(symbol: String) -> Double? {
+        // function for pushing a operation to opStack, and get the result of evaluation
         if let operation = knownOps[symbol] {
             opStack.append(operation)
         }
         return evaluate()
     }
     func evaluate() -> Double? {
-        let (result, reminder) = evaluate(opStack)
+        // evluation function for getting the result and get a optional double as return
+        let (result, reminder) = evaluate(opStack) // call for the another evalute function and assign a tuple to (result, reminder)
         print("\(opStack) : \(result) with \(reminder) left over")
         return result
         
     }
     
-    func clearStack() {
+    func clearStack() { // clear the opStack by removeAll method
         opStack.removeAll()
     }
     private func evaluate(ops:[Op]) -> (result:Double?, remaingsOps:[Op]) {

@@ -28,13 +28,14 @@ class ViewController: UIViewController {
     @IBAction func appendDigit(sender: UIButton) {
         let digit = sender.currentTitle!
         if userIsInMiddleOfTypingNumbers {
-        display.text = display.text! + digit
+            display.text = display.text! + digit
         } else {
             if numberHasSign {
                 display.text = "−" + digit
                 userIsInMiddleOfTypingNumbers = true
             }
-            else{display.text = digit
+            else{
+                display.text = digit
                 userIsInMiddleOfTypingNumbers = true
             }
         }
@@ -52,13 +53,12 @@ class ViewController: UIViewController {
         if userIsInMiddleOfTypingNumbers {
             enter()
         }
-        displayValue = M_PI
-        enter()
+        display.text = "π"
+        caculatorBrain.pushOperand(M_PI)
     }
-    var displayValue: Double? {
+    var displayValue: Double! {
         get{
-            let displayNumber = NSNumberFormatter().numberFromString(display.text!)!.doubleValue ?? 0
-            return displayNumber
+           return NSNumberFormatter().numberFromString(display.text!)!.doubleValue
         }
         set {
             display.text = "\(newValue)"
@@ -109,12 +109,12 @@ class ViewController: UIViewController {
         historyOfCaculator.text = ""
         numberHasSign = false
     }
-
+    
 
     @IBAction func enter() {
         if let result = caculatorBrain.pushOperand(displayValue!) {
-            displayValue = result
-            evaluationStack.append(displayValue!)
+//            displayValue = result
+            evaluationStack.append(result)
         }else {
             displayValue = nil
         }
